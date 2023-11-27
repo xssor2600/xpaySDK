@@ -1,0 +1,19 @@
+{
+  "app_id": "x",
+  "app_secret": "x",
+  "category_type": 1273,
+  "access_token": "xxxx",
+  "apis_url": {
+    "epay_create_order": "https://open.kuaishou.com/openapi/mp/developer/epay/create_order",
+    "epay_query_order": "https://open.kuaishou.com/openapi/mp/developer/epay/query_order",
+    "refund_url": "https://open.kuaishou.com/openapi/mp/developer/epay/apply_refund",
+    "refund_query": "",
+    "settle_url": "https://open.kuaishou.com/openapi/mp/developer/epay/settle",
+    "settle_query_url": "https://open.kuaishou.com/openapi/mp/developer/epay/query_settle"
+  },
+  "api_notify_url":{
+    "pay_notify": "https://openpay.service.com/pay_notify/ks",
+    "settle_notify": "https://openpay.service.com/settle_notify/ks",
+    "refund_notify": "https://openpay.service.com/refund_notify/ks"
+  }
+}
