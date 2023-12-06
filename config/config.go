@@ -61,7 +61,6 @@ func LoadJsonConfig(config interface{}, fileName string) {
 
 	file := OpenFile(fileName)
 	defer file.Close()
-
 	decoder = json.NewDecoder(file)
 	if err = decoder.Decode(config); err != nil {
 		log.Fatal(err)

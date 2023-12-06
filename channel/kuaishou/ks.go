@@ -6,6 +6,7 @@ import (
 	"github.com/xssor2600/xpaySDK/config"
 	"github.com/xssor2600/xpaySDK/dto"
 	"github.com/xssor2600/xpaySDK/utils"
+	"net/http"
 	"time"
 )
 
@@ -27,7 +28,7 @@ func (ks *KsApi) EpayCreateOrder(ctx context.Context, ksReq *dto.KsPayReq) (inte
 		Set("app_id", ks.KsConfig.AppId)
 	pm.Set("sign", utils.KsSignFromMap(pm, ks.KsConfig.AppSecret))
 	requestUrl := fmt.Sprintf("%s?app_id=%s&access_token=%s", ks.KsConfig.ApisUrl.EpayCreateOrder, ks.KsConfig.AppId, ks.KsConfig.AccessToken)
-	respbyte, err := utils.DoHttpRequestJson(ctx, "POST", requestUrl, pm, nil)
+	respbyte, err := utils.DoHttpRequestJson(ctx, http.MethodPost, requestUrl, pm, nil)
 	if err != nil {
 		return nil, err
 	}

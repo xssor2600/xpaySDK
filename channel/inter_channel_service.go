@@ -6,16 +6,11 @@ import (
 	"github.com/xssor2600/xpaySDK/config"
 )
 
-// InstanceChannelCenter integration channel service center
-type InstanceChannelCenter interface {
-	GetChannelInstance(ctx context.Context, config config.GlobalConfig) (interface{}, error)
-}
-
-type InstanceChannelHandler struct {
+type InstanceChannelFactory struct {
 	ChannelName string `json:"channel_name"`
 }
 
-func (ich *InstanceChannelHandler) GetChannelHandler(ctx context.Context, globalConfig config.GlobalConfig) (interface{}, error) {
+func (ich *InstanceChannelFactory) GetChannelHandler(ctx context.Context, globalConfig config.GlobalConfig) (interface{}, error) {
 	switch ich.ChannelName {
 	case config.CHANNEL_ALIPAY:
 
@@ -33,7 +28,7 @@ func (ich *InstanceChannelHandler) GetChannelHandler(ctx context.Context, global
 			return nil, err
 		}
 		if kc, ok := ksc.(*config.KuaishouConfig); ok {
-			return &kuaishou.KsApi{*kc}, nil
+			return &kuaishou.KsApi{KsConfig: *kc}, nil
 		}
 	}
 

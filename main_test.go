@@ -23,10 +23,8 @@ func Test_channelConfig(t *testing.T) {
 }
 
 func Test_channelKsApi(t *testing.T) {
-	ctx := context.Background()
-	ksConfig := &config.KuaishouConfig{}
-	handler := channel.InstanceChannelHandler{ChannelName: config.CHANNEL_KUAISHOU}
-	ks, err := handler.GetChannelHandler(context.Background(), ksConfig)
+	handler := channel.InstanceChannelFactory{ChannelName: config.CHANNEL_KUAISHOU}
+	ks, err := handler.GetChannelHandler(context.Background(), &config.KuaishouConfig{})
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -38,7 +36,7 @@ func Test_channelKsApi(t *testing.T) {
 			Subject: "test",
 			Detail:  "test",
 		}
-		orderResp, err := ksApi.EpayCreateOrder(ctx, &ksOrderReq)
+		orderResp, err := ksApi.EpayCreateOrder(context.Background(), &ksOrderReq)
 		fmt.Println(utils.JsonMashObject(orderResp), err)
 	}
 
