@@ -41,3 +41,23 @@ func Test_channelKsApi(t *testing.T) {
 	}
 
 }
+
+func Test_channelToutiaoApi(t *testing.T) {
+	handler := channel.InstanceChannelFactory{ChannelName: config.CHANNEL_TOUTIAO}
+	ks, err := handler.GetChannelHandler(context.Background(), &config.ToutiaoConfig{})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	if ksApi, ok := ks.(*kuaishou.KsApi); ok {
+		ksOrderReq := dto.KsPayReq{
+			OpenId:  "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+			OrderId: "XXXXXXXXXXXXXXXXXXXXX",
+			Money:   10,
+			Subject: "test",
+			Detail:  "test",
+		}
+		orderResp, err := ksApi.EpayCreateOrder(context.Background(), &ksOrderReq)
+		fmt.Println(utils.JsonMashObject(orderResp), err)
+	}
+
+}

@@ -1,0 +1,23 @@
+{
+  "app_id": "x",
+  "app_public_key": "x",
+  "merchant_private_key": "",
+  "pic_url": "https://open.system/demo.png",
+  "detail_url": "/path/to/detail",
+  "key_version": "1",
+  "product_type": 401,
+  "tag_group_id": "xxxxxx",
+  "apis_url": {
+    "create_order": "",
+    "query_order": "",
+    "refund_url": "",
+    "refund_query": "",
+    "settle_url": "",
+    "settle_query_url": ""
+  },
+  "api_notify_url":{
+    "pay_notify": "https://openpay.service.com/pay_notify/tt",
+    "settle_notify": "https://openpay.service.com/settle_notify/tt",
+    "refund_notify": "https://openpay.service.com/refund_notify/tt"
+  }
+}
