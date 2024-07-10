@@ -9,6 +9,7 @@
   "product_type": 1,
   "tag_group_id": "group_id_1",
   "apis_url": {
+    "base_url": "https://open.douyin.com",
     "create_order": "https://open.douyin.com/requestOrder",
     "query_order": "https://open.douyin.com/api/trade_basic/v1/developer/order_query",
     "refund_url": "",

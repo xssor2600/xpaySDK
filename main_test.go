@@ -10,7 +10,6 @@ import (
 	"github.com/xssor2600/xpaySDK/dto"
 	"github.com/xssor2600/xpaySDK/utils"
 	"log"
-	"net/http"
 	"testing"
 )
 
@@ -90,37 +89,8 @@ func Test_channelToutiaoApi(t *testing.T) {
 				GoodsDetailPage: dto.GoodsPage{},
 			}},
 		}
-		orderParams := dto.NewTradeCreateOrder(
-			payReq.OutOrderNo,
-			payReq.TotalAmount,
-			payReq.PayExpireSeconds,
-			payReq.MerchantUid,
-			dto.PayNotifyUrl("", &tradeApi.ToutiaoConfig),
-			dto.SkuList(payReq.Uid, payReq.Subject, payReq.GoodsDetail, payReq.SkuList[0]),
-			dto.LimitPayWayList(&payReq),
-			dto.OrderEntrySchema(payReq.GoodsDetail, payReq.SkuList[0]),
-			dto.TotalAmount(payReq.TotalAmount, payReq.GoodsDetail),
-			dto.PayScene(""),
-		)
-
-		keyBytes, err := utils.ReadPemFile(fmt.Sprintf("config/channel_config/%s", tradeApi.ToutiaoConfig.MerchantPrivateKey))
-		if err != nil {
-			panic("keyBytes err")
-		}
-		rsaPrivateKey, keyErr := utils.ParsePKCS1PrivateKey(keyBytes)
-		if keyErr != nil {
-			panic("rsaPrivateKey err")
-		}
-
-		nonceStr, timestamp := utils.GetNonceStr(), utils.GetTimeStamp()
-		createOrderBody := utils.JonsObject(orderParams)
-		orderSign, _ := utils.GenChannelSign(http.MethodPost, "/requestOrder", timestamp, nonceStr, createOrderBody, rsaPrivateKey)
-
-		fmt.Println(dto.TradeCreateOrderResp{
-			Data:              createOrderBody,
-			ByteAuthorization: utils.GetByteAuth(tradeApi.ToutiaoConfig.AppId, nonceStr, timestamp, utils.GetKeyVersion(tradeApi.ToutiaoConfig.KeyVersion), orderSign),
-		})
-
+		resp, _ := tradeApi.CreateOrder(context.Background(), &payReq)
+		fmt.Println(resp)
 	}
 
 }
