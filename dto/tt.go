@@ -192,3 +192,10 @@ type TradeCreateOrderResp struct {
 	Data              string `json:"data"`
 	ByteAuthorization string `json:"byteAuthorization"`
 }
+
+// ChannelCallBackCommonMsg 交易系统消息通知统一结构类型
+type ChannelCallBackCommonMsg struct {
+	Msg     string `json:"msg"`
+	Type    string `json:"type"` // payment（支付成功/支付取消）
+	Version string `json:"version"`
+}
