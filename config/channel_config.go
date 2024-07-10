@@ -41,6 +41,7 @@ type ToutiaoConfig struct {
 	ProductType        int    `json:"product_type"`
 	TagGroupId         string `json:"tag_group_id"`
 	ApisUrl            struct {
+		BaseUrl        string `json:"base_url"`
 		CreateOrder    string `json:"create_order"`
 		QueryOrder     string `json:"query_order"`
 		RefundUrl      string `json:"refund_url"`
