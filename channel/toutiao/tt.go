@@ -6,11 +6,11 @@ import (
 	"github.com/xssor2600/xpaySDK/dto"
 )
 
-type TTApi struct {
+type TTradeApi struct {
 	ToutiaoConfig config.ToutiaoConfig `json:"toutiao_config"`
 }
 
-func (tt *TTApi) CreateOrder(ctx context.Context, order *dto.ToutiaoPayReq) (interface{}, error) {
+func (tt *TTradeApi) CreateOrder(ctx context.Context, order *dto.ToutiaoPayReq) (interface{}, error) {
 
 	return nil, nil
 }

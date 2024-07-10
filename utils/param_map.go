@@ -104,7 +104,7 @@ func (pm ParamMap) EncodeSignParams() string {
 	return buf.String()[:buf.Len()-1]
 }
 
-//EncodeURLParams  ("bar=baz&foo=quux") sorted by key.
+// EncodeURLParams  ("bar=baz&foo=quux") sorted by key.
 func (pm ParamMap) EncodeURLParams() string {
 	if pm == nil {
 		return ""
@@ -172,4 +172,14 @@ func convertToString(v interface{}) (str string) {
 	}
 	str = string(bs)
 	return
+}
+
+func JonsObject(obj interface{}) string {
+	if obj == nil {
+		return ""
+	}
+	if res, err := json.Marshal(obj); err == nil {
+		return string(res)
+	}
+	return ""
 }

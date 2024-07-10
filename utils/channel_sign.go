@@ -10,6 +10,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	mrand "math/rand"
 	"sort"
@@ -104,6 +105,13 @@ func GetTimeStamp() string {
 	return strconv.FormatInt(time.Now().Unix(), 10)
 }
 
+func GetKeyVersion(mcKeyVersion string) string {
+	if mcKeyVersion == "" {
+		return "1"
+	}
+	return strings.TrimSpace(mcKeyVersion)
+}
+
 func init() {
 	mrand.Seed(time.Now().UnixNano())
 }
@@ -116,4 +124,39 @@ func RandString(n int) string {
 		b[i] = letterRunes[mrand.Intn(len(letterRunes))]
 	}
 	return string(b)
+}
+
+func ParsePKCS1PrivateKey(data []byte) (key *rsa.PrivateKey, err error) {
+	var block *pem.Block
+	block, _ = pem.Decode(data)
+	if block == nil {
+		return nil, errors.New("private key error")
+	}
+
+	key, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return key, err
+}
+
+func ParsePKCS1PublicKey(data []byte) (key *rsa.PublicKey, err error) {
+	var block *pem.Block
+	block, _ = pem.Decode(data)
+	if block == nil {
+		return nil, errors.New("public key error")
+	}
+
+	var pubInterface interface{}
+	pubInterface, err = x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	key, ok := pubInterface.(*rsa.PublicKey)
+	if !ok {
+		return nil, errors.New("public key error")
+	}
+
+	return key, err
 }

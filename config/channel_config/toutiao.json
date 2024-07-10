@@ -1,23 +1,24 @@
 {
-  "app_id": "x",
-  "app_public_key": "x",
-  "merchant_private_key": "",
-  "pic_url": "https://open.system/demo.png",
-  "detail_url": "/path/to/detail",
-  "key_version": "1",
-  "product_type": 401,
-  "tag_group_id": "xxxxxx",
+  "app_id": "your_app_id",
+  "app_public_key": "tt_platform.pem",
+  "merchant_private_key": "tt_private.pem",
+  "access_token": "",
+  "pic_url": "http://example.com/pic.jpg",
+  "detail_url": "http://example.com/detail",
+  "key_version": "v1",
+  "product_type": 1,
+  "tag_group_id": "group_id_1",
   "apis_url": {
-    "create_order": "",
-    "query_order": "",
+    "create_order": "https://open.douyin.com/requestOrder",
+    "query_order": "https://open.douyin.com/api/trade_basic/v1/developer/order_query",
     "refund_url": "",
     "refund_query": "",
     "settle_url": "",
     "settle_query_url": ""
   },
-  "api_notify_url":{
-    "pay_notify": "https://openpay.service.com/pay_notify/tt",
-    "settle_notify": "https://openpay.service.com/settle_notify/tt",
-    "refund_notify": "https://openpay.service.com/refund_notify/tt"
+  "api_notify_url": {
+    "pay_notify": "http://notify.example.com/pay",
+    "settle_notify": "http://notify.example.com/settle",
+    "refund_notify": "http://notify.example.com/refund"
   }
 }

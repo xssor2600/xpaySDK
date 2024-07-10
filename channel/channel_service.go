@@ -26,8 +26,8 @@ func (ich *InstanceChannelFactory) GetChannelHandler(ctx context.Context, global
 		if err != nil {
 			return nil, err
 		}
-		if kc, ok := ttc.(*config.ToutiaoConfig); ok {
-			return &toutiao.TTApi{*kc}, nil
+		if trade, ok := ttc.(*config.ToutiaoConfig); ok {
+			return &toutiao.TTradeApi{*trade}, nil
 		}
 		break
 

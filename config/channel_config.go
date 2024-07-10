@@ -1,6 +1,8 @@
 package config
 
-import "errors"
+import (
+	"errors"
+)
 
 type AlipayConfig struct {
 }
@@ -32,6 +34,7 @@ type ToutiaoConfig struct {
 	AppId              string `json:"app_id"`
 	AppPublicKey       string `json:"app_public_key"`
 	MerchantPrivateKey string `json:"merchant_private_key"`
+	AccessToken        string `json:"access_token"`
 	PicUrl             string `json:"pic_url"`
 	DetailUrl          string `json:"detail_url"`
 	KeyVersion         string `json:"key_version"`
