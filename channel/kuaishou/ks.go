@@ -2,10 +2,13 @@ package kuaishou
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/xssor2600/xpaySDK/config"
 	"github.com/xssor2600/xpaySDK/dto"
 	"github.com/xssor2600/xpaySDK/utils"
+	"io"
 	"net/http"
 	"time"
 )
@@ -35,4 +38,21 @@ func (ks *KsApi) EpayCreateOrder(ctx context.Context, ksReq *dto.KsPayReq) (inte
 	payResp := dto.CreatePayResp{}
 	utils.JsonUnMashObject(respbyte, &payResp)
 	return payResp, nil
+}
+
+// 回掉验证签名
+func (ks *KsApi) CallBackSignVerify(request http.Request) error {
+	data, err := io.ReadAll(request.Body)
+	if err != nil {
+		return err
+	}
+	req := new(dto.NotifyReq)
+	if err := json.Unmarshal(data, req); err != nil {
+		return err
+	}
+	kwaisign := request.Header.Get("kwaisign")
+	if dataSign := utils.Md5BackSign(string(data), ks.KsConfig.AppSecret); dataSign != kwaisign {
+		return errors.New("sign verify err")
+	}
+	return nil
 }

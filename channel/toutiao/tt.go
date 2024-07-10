@@ -8,6 +8,7 @@ import (
 	"github.com/xssor2600/xpaySDK/config"
 	"github.com/xssor2600/xpaySDK/dto"
 	"github.com/xssor2600/xpaySDK/utils"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -99,5 +100,32 @@ func (tt *TTradeApi) CallToutiaoTradeAPI(ctx context.Context, method string, req
 	if err := json.Unmarshal(responseData, &resp); err != nil {
 		return errors.New("json.Unmarshal err")
 	}
+	return nil
+}
+
+// 回掉验证签名
+func (tt *TTradeApi) CallBackSignVerify(request http.Request) error {
+	data, err := io.ReadAll(request.Body)
+	if err != nil {
+		return err
+	}
+	req := new(dto.ChannelCallBackCommonMsg)
+	if err := json.Unmarshal(data, req); err != nil {
+		return err
+	}
+	// 请求头内容获取
+	byteTimestamp, byteNonceStr := request.Header.Get("Byte-Timestamp"), request.Header.Get("Byte-Nonce-Str")
+	byteSignature := request.Header.Get("Byte-Signature")
+
+	// 获取平台公钥
+	keyBytes, err := utils.ReadPemFile(fmt.Sprintf("config/channel_config/%s", tt.ToutiaoConfig.AppPublicKey))
+	if err != nil {
+		panic("keyBytes err")
+	}
+
+	if signErr := utils.CheckChannelSign(byteTimestamp, byteNonceStr, string(data), byteSignature, strings.TrimSpace(string(keyBytes))); signErr != nil {
+		return signErr
+	}
+
 	return nil
 }

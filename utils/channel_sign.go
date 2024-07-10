@@ -160,3 +160,10 @@ func ParsePKCS1PublicKey(data []byte) (key *rsa.PublicKey, err error) {
 
 	return key, err
 }
+
+func Md5BackSign(signStr string, appSecret string) string {
+	m := md5.New()
+	m.Write([]byte(signStr + appSecret))
+	res := hex.EncodeToString(m.Sum(nil))
+	return res
+}
