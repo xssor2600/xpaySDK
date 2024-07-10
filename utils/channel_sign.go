@@ -1,10 +1,22 @@
 package utils
 
 import (
+	"crypto"
 	"crypto/md5"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/sha256"
+	"crypto/x509"
+	"encoding/base64"
 	"encoding/hex"
+	"encoding/pem"
+	"errors"
 	"fmt"
+	mrand "math/rand"
 	"sort"
+	"strconv"
+	"strings"
+	"time"
 )
 
 func KsSignFromMap(s map[string]interface{}, key string) string {
@@ -28,4 +40,123 @@ func KsSignFromMap(s map[string]interface{}, key string) string {
 	cipherStr := md5Ctx.Sum(nil)
 	upperSign := hex.EncodeToString(cipherStr)
 	return upperSign
+}
+
+func GenChannelSign(method, url, timestamp, nonce, body string, privateKey *rsa.PrivateKey) (string, error) {
+	//method内容必须大写，如GET、POST，uri不包含域名，必须以'/'开头
+	targetStr := method + "\n" + url + "\n" + timestamp + "\n" + nonce + "\n" + body + "\n"
+	h := sha256.New()
+	h.Write([]byte(targetStr))
+	digestBytes := h.Sum(nil)
+
+	signBytes, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, digestBytes)
+	if err != nil {
+		return "", err
+	}
+	sign := base64.StdEncoding.EncodeToString(signBytes)
+
+	return sign, nil
+}
+
+func CheckChannelSign(timestamp, nonce, body, signature, pubKeyStr string) error {
+
+	pubKey, err := PemToRSAPublicKey(pubKeyStr)
+	if err != nil {
+		return err
+	}
+
+	hashed := sha256.Sum256([]byte(timestamp + "\n" + nonce + "\n" + body + "\n"))
+	signBytes, err := base64.StdEncoding.DecodeString(signature)
+	if err != nil {
+		return err
+	}
+	err = rsa.VerifyPKCS1v15(pubKey, crypto.SHA256, hashed[:], signBytes)
+	return err
+}
+
+func PemToRSAPublicKey(pemKeyStr string) (*rsa.PublicKey, error) {
+	block, _ := pem.Decode([]byte(pemKeyStr))
+	if block == nil || len(block.Bytes) == 0 {
+		return nil, fmt.Errorf("empty block in pem string")
+	}
+	key, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	switch key := key.(type) {
+	case *rsa.PublicKey:
+		return key, nil
+	default:
+		return nil, fmt.Errorf("not rsa public key")
+	}
+}
+
+func GetByteAuth(appId, onceStr string, timestamp string, keyVersion string, signature string) string {
+	return fmt.Sprintf("SHA256-RSA2048 appid=%s,nonce_str=%s,key_version=%s,timestamp=%s,signature=%s",
+		appId, onceStr, keyVersion, timestamp, signature)
+}
+
+// GetNonceStr 32位随机字符串
+func GetNonceStr() string {
+	return strings.ToUpper(RandString(32))
+}
+
+func GetTimeStamp() string {
+	return strconv.FormatInt(time.Now().Unix(), 10)
+}
+
+func GetKeyVersion(mcKeyVersion string) string {
+	if mcKeyVersion == "" {
+		return "1"
+	}
+	return strings.TrimSpace(mcKeyVersion)
+}
+
+func init() {
+	mrand.Seed(time.Now().UnixNano())
+}
+
+var letterRunes = []rune("1112222222")
+
+func RandString(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letterRunes[mrand.Intn(len(letterRunes))]
+	}
+	return string(b)
+}
+
+func ParsePKCS1PrivateKey(data []byte) (key *rsa.PrivateKey, err error) {
+	var block *pem.Block
+	block, _ = pem.Decode(data)
+	if block == nil {
+		return nil, errors.New("private key error")
+	}
+
+	key, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return key, err
+}
+
+func ParsePKCS1PublicKey(data []byte) (key *rsa.PublicKey, err error) {
+	var block *pem.Block
+	block, _ = pem.Decode(data)
+	if block == nil {
+		return nil, errors.New("public key error")
+	}
+
+	var pubInterface interface{}
+	pubInterface, err = x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	key, ok := pubInterface.(*rsa.PublicKey)
+	if !ok {
+		return nil, errors.New("public key error")
+	}
+
+	return key, err
 }

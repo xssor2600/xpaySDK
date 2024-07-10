@@ -3,6 +3,7 @@ package channel
 import (
 	"context"
 	"github.com/xssor2600/xpaySDK/channel/kuaishou"
+	"github.com/xssor2600/xpaySDK/channel/toutiao"
 	"github.com/xssor2600/xpaySDK/config"
 )
 
@@ -21,6 +22,14 @@ func (ich *InstanceChannelFactory) GetChannelHandler(ctx context.Context, global
 	case config.CHANNEL_PAYPAL:
 
 	case config.CHANNEL_TOUTIAO:
+		ttc, err := globalConfig.GetChannelConfig(ich.ChannelName)
+		if err != nil {
+			return nil, err
+		}
+		if trade, ok := ttc.(*config.ToutiaoConfig); ok {
+			return &toutiao.TTradeApi{*trade}, nil
+		}
+		break
 
 	case config.CHANNEL_KUAISHOU:
 		ksc, err := globalConfig.GetChannelConfig(ich.ChannelName)
@@ -30,7 +39,7 @@ func (ich *InstanceChannelFactory) GetChannelHandler(ctx context.Context, global
 		if kc, ok := ksc.(*config.KuaishouConfig); ok {
 			return &kuaishou.KsApi{KsConfig: *kc}, nil
 		}
+		break
 	}
-
 	return nil, nil
 }

@@ -43,9 +43,11 @@ func init() {
 		//LoadJsonConfig(&ttConfig,"toutiao.json")
 		//LoadJsonConfig(&ggConfig,"google.json")
 		LoadJsonConfig(&ksConfig, "kuaishou.json")
+		LoadJsonConfig(&ttConfig, "toutiao.json")
+
 		//ChannelConfigMap.Store(CHANNEL_ALIPAY,&alipayConfig)
 		//ChannelConfigMap.Store(CHANNEL_WECHAT,&alipayConfig)
-		//ChannelConfigMap.Store(CHANNEL_TOUTIAO,&ttConfig)
+		ChannelConfigMap.Store(CHANNEL_TOUTIAO, &ttConfig)
 		//ChannelConfigMap.Store(CHANNEL_GOOGLE,&ggConfig)
 		ChannelConfigMap.Store(CHANNEL_KUAISHOU, &ksConfig)
 	})
