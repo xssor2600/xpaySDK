@@ -27,10 +27,13 @@ func (tt *TTradeApi) CreateOrder(ctx context.Context, order *dto.ToutiaoPayReq) 
 		PayExpireSeconds: order.PayExpireSeconds,
 		PayNotifyUrl:     "",
 		MerchantUid:      order.MerchantUid,
-		OrderEntrySchema: dto.SkuSchema{},
-		LimitPayWayList:  nil,
-		PayScene:         "",
-		GoodsDetail:      order.GoodsDetail,
+		OrderEntrySchema: dto.SkuSchema{
+			Path:   order.OrderEntrySchema.Path,
+			Params: order.OrderEntrySchema.Params,
+		},
+		LimitPayWayList: nil,
+		PayScene:        order.PayScene,
+		GoodsDetail:     order.GoodsDetail,
 	}
 	orderParams := dto.NewTradeCreateOrder(
 		payReq.OutOrderNo,
@@ -42,7 +45,7 @@ func (tt *TTradeApi) CreateOrder(ctx context.Context, order *dto.ToutiaoPayReq) 
 		dto.LimitPayWayList(&payReq),
 		dto.OrderEntrySchema(payReq.GoodsDetail, payReq.SkuList[0]),
 		dto.TotalAmount(payReq.TotalAmount, payReq.GoodsDetail),
-		dto.PayScene(""),
+		dto.PayScene(payReq.PayScene),
 	)
 
 	keyBytes, err := utils.ReadPemFile(fmt.Sprintf("config/channel_config/%s", tt.ToutiaoConfig.MerchantPrivateKey))
