@@ -1,0 +1,14 @@
+{
+  "package": "",
+  "app_id": "",
+  "kit_api": "https://api.storekit.itunes.apple.com",
+  "sandbox_kit_api": "https://api.storekit-sandbox.itunes.apple.com",
+  "receipt_api": "https://buy.itunes.apple.com/verifyReceipt",
+  "sandbox_receipt_api": "https://sandbox.itunes.apple.com/verifyReceipt",
+  "open_share_code": "",
+  "products": "",
+  "publish_id": "",
+  "private_key": "",
+  "sign_key": "",
+  "server_notifications_url": ""
+}
